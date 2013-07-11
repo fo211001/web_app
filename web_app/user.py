@@ -113,7 +113,8 @@ def register(name, email, password):
         user.password = password
         session.add(user)
         session.commit()
-        return user
+        #return user
+        return True
 
 
 def login(email, password):

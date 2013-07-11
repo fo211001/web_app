@@ -9,7 +9,7 @@ from .models import (
 
 #-----4444
 
-def notfound(request):
+def not_found(request):
     return HTTPNotFound('Not found, bro.')
 
 def main(global_config, **settings):
@@ -27,6 +27,7 @@ def main(global_config, **settings):
     config.add_route('chords', '/chords')
     config.add_route('about', '/about')
     config.add_route('login', '/login')
-    config.add_notfound_view(notfound, append_slash=True)
+    config.add_route('registration', '/registration')
+    config.add_notfound_view(not_found, append_slash=True)
     config.scan()
     return config.make_wsgi_app()

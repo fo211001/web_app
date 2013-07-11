@@ -6,7 +6,7 @@ from .models import (
     DBSession,
     MyModel,
     )
-
+from web_app.user import login, register
 
 
 @view_config(route_name='home', renderer='templates/mytemplate.jinja2')
@@ -25,30 +25,23 @@ def about_view(request):
 
 @view_config(route_name='chords', renderer='templates/chords.jinja2')
 def chords_view(request):
-    return
+    return {}
 
 
 @view_config(route_name='login', renderer='templates/login.jinja2')
 def login_view(request):
-    if "email" in request.POST:
-        return {'email':request.POST['email']}
+    if "email" and "password" in request.POST:
+        if login(request.POST['email'], request.POST['password']):
+        #return {"email": login(request.POST['email'], request.POST['password'])}
+            return {'status': "Login!"}
     return {}
 
-
-
-# @view_config(route_name='chord',renderer='templates/chord.pt')
-# def chord_view(request):
-#     matchdict = request.matchdict
-#     chord = matchdict.get('name', None)
-#     notes = musicals(chord)
-#     dictionary = {
-#         'a': 'Aaa',
-#         'foo': 'Foo!'
-#     }
-#
-#     return {'Chord': str(chord), 'dict': dictionary}
-#         # Response("Chord:" + str("\n") +
-#         #             "\r|\n".join((",".join((unicode(z) for z in x)) for x in iterate_fingerings(notes))))
+@view_config(route_name='registration', renderer='templates/registration.jinja2')
+def registration_view(request):
+    if "name" and "email" and "password" in request.POST:
+        if register(request.POST['name'], request.POST['email'], request.POST['password']):
+            return {'status': "Register!"}
+    return {}
 
 
 
