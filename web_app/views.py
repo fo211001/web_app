@@ -30,9 +30,9 @@ def chords_view(request):
 
 @view_config(route_name='login', renderer='templates/login.jinja2')
 def login_view(request):
-    email = request.matchdict['email']
-    return {'email': email}
-
+    if "email" in request.POST:
+        return {'email':request.POST['email']}
+    return {}
 
 
 

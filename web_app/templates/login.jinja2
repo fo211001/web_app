@@ -1,6 +1,18 @@
 {% extends 'mytemplate.jinja2' %}
 {% block content %}
 
-<h2>Your email: {{ email }}</h2>
+<form method="post" >
+   <br> </br>
+    <br> </br>
+    <br> </br>
+    <p><b>Ваш логин:</b><br>
+        <input type="text" size="40" name="email">
+    <p><b>Ваш пароль:</b><br>
+    <input type="text" size="40" name="password">
+    <Br><input type="submit"></Br>
+  </p>
 
+
+ </form>
+<h1>email {{ email }}</h1>
 {% endblock %}
