@@ -1,0 +1,87 @@
+body{
+	margin: 0;
+	padding: 0;
+	min-height: 100%;
+}
+
+.content{
+	padding : 81px 0 27px 0;
+}
+.content-wrap{
+	padding: 0 15px;
+	margin: 0 auto;
+	max-width: 1280px;
+	min-width: 990px;
+}
+
+.logo h1{
+	color: #d05300;
+}
+
+.header {
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: rgba(255, 255, 255, 0.8);
+	border-bottom: solid 1px #d05300;
+}
+
+.header .content-wrap div {
+	display:inline-block;
+	vertical-align: middle
+}
+.footer {
+	position:fixed;
+	width:100%;
+	bottom:0;
+	font-weight: bold;
+        border-top: solid 1px #d05300;
+	text-align:right;
+	background-color:#EEE;
+}
+
+.motto {
+	position:relative;
+	top: -10px;
+	letter-spacing: 8px;
+}
+
+.menu {
+	margin-left: 50px;
+	font-size: larger;
+}
+
+.menu a{
+	display: inline-block;
+	margin-left: 15px;
+}
+
+.sn {
+	font-size: larger;
+	float:right;
+	margin-top: 25px;
+}
+
+.sn a {
+	display: inline-block;
+	line-height: 25px;
+	vertical-align:middle;
+	margin-right: 20px;
+}
+.sn a.icon {
+	width: 26px;
+	height: 25px;
+	margin: 0 3px;
+	background: url(/static/images/social-icons.png) no-repeat;
+}
+.sn a.vk {
+	background-position: 0 0;
+}
+.sn a.fb {
+	background-position: -26px 0;
+}
+.sn a.ok {
+	background-position: -52px 0;
+}

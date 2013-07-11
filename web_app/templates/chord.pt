@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
+<head>
+    <title>Мой песенник.ру: здесь живут Ваши песни</title>
+	<meta name='description' content='Сервис, где лежат именно Ваши песни'>
+	<link rel='stylesheet' type='text/css' href='/static/css/bootstrap.min.css'/>
+	<link rel='stylesheet' type='text/css' href='/static/css/pesennik.css'/>
+	<script type='text/javascript' src='/static/js/bootstrap.min.js'></script>
+</head>
+<body>
+  	<div class="header">
+		<div class='content-wrap'>
+			<div class='logo'>
+			<h1>Мой песенник.ру</h1>
+			<span class='motto'>здесь живут Ваши песни</span>
+			</div>
+			<div class='menu'>
+				<a href="/">Мои песни</a>
+				<a href="/chords">Аппликатуры</a>
+			</div>
+			<div class='sn'>
+				<a href="/about">О проекте</a>
+				<a href="#" class="icon vk"></a>
+				<a href="#" class="icon fb"></a>
+				<a href="#" class="icon ok"></a>
+			</div>
+		</div>
+	</div>
+
+	<div class='footer'>
+		<div class='content-wrap'>
+		   &copy; Ах, ноги немного борщ
+		</div>
+	</div>
+	<div class='content'>
+		<div class='content-wrap'>
+		    data = ${ data }<br>
+		    dict['a'] = ${ dict['a'] }<br>
+		    dict['foo'] = ${ dict['foo'] }<br>
+		</div>
+	</div>
+</body>
+</html>
