@@ -7,7 +7,7 @@ from .models import (
     Base,
     )
 
-#-----44
+#-----4444
 
 def notfound(request):
     return HTTPNotFound('Not found, bro.')
@@ -26,7 +26,6 @@ def main(global_config, **settings):
     config.add_route('chord', '/chord/{name}')
     config.add_route('chords', '/chords')
     config.add_route('about', '/about')
-    config.add_route('newsong', '/newsong')
     config.add_route('login', '/login/{email}')
     config.add_notfound_view(notfound, append_slash=True)
     config.scan()

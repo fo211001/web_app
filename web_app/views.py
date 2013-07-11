@@ -1,15 +1,12 @@
+from pyramid.request import Request
 from pyramid.response import Response
 from pyramid.view import view_config
-from pyramid.renderers import render_to_response
-from pyramid.renderers import render
 from sqlalchemy.exc import DBAPIError
 from .models import (
     DBSession,
     MyModel,
     )
-from song.chord import parse_chord, musicals
-from song.drawer import image_fingering
-from song.fingering import iterate_fingerings
+
 
 
 @view_config(route_name='home', renderer='templates/mytemplate.jinja2')
@@ -21,41 +18,37 @@ def my_view(request):
     return {'one': one, 'project': 'web_app'}
 
 
-@view_config(route_name='about',renderer='templates/about.jinja2')
+@view_config(route_name='about', renderer='templates/about.jinja2')
 def about_view(request):
-    return {"hello":"world"}
-#
-# @view_config(route_name='login')
-# def login_view(request):
+    return {'About': "us"}
 
 
-
-
-@view_config(route_name='chords')
+@view_config(route_name='chords', renderer='templates/chords.jinja2')
 def chords_view(request):
-    result = render('templates/chords.pt', {}, request=request)
-    response = Response(result)
-    return response
+    return
 
 
-@view_config(route_name='newsong')
-def newsong_view(request):
-    return Response("New")
+@view_config(route_name='login', renderer='templates/login.jinja2')
+def login_view(request):
+    email = request.matchdict['email']
+    return {'email': email}
 
 
-@view_config(route_name='chord',renderer='templates/chord.pt')
-def chord_view(request):
-    matchdict = request.matchdict
-    chord = matchdict.get('name', None)
-    notes = musicals(chord)
-    dictionary = {
-        'a': 'Aaa',
-        'foo': 'Foo!'
-    }
 
-    return {'Chord': str(chord), 'dict': dictionary}
-        # Response("Chord:" + str("\n") +
-        #             "\r|\n".join((",".join((unicode(z) for z in x)) for x in iterate_fingerings(notes))))
+
+# @view_config(route_name='chord',renderer='templates/chord.pt')
+# def chord_view(request):
+#     matchdict = request.matchdict
+#     chord = matchdict.get('name', None)
+#     notes = musicals(chord)
+#     dictionary = {
+#         'a': 'Aaa',
+#         'foo': 'Foo!'
+#     }
+#
+#     return {'Chord': str(chord), 'dict': dictionary}
+#         # Response("Chord:" + str("\n") +
+#         #             "\r|\n".join((",".join((unicode(z) for z in x)) for x in iterate_fingerings(notes))))
 
 
 
