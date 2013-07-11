@@ -12,7 +12,7 @@ from song.drawer import image_fingering
 from song.fingering import iterate_fingerings
 
 
-@view_config(route_name='home', renderer='templates/mytemplate.pt')
+@view_config(route_name='home', renderer='templates/mytemplate.jinja2')
 def my_view(request):
     try:
         one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
@@ -21,11 +21,14 @@ def my_view(request):
     return {'one': one, 'project': 'web_app'}
 
 
-@view_config(route_name='about')
+@view_config(route_name='about',renderer='templates/about.jinja2')
 def about_view(request):
-    result = render('templates/about.pt', {}, request=request)
-    response = Response(result)
-    return response
+    return {"hello":"world"}
+#
+# @view_config(route_name='login')
+# def login_view(request):
+
+
 
 
 @view_config(route_name='chords')

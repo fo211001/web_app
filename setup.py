@@ -14,6 +14,9 @@ requires = [
     'pyramid_debugtoolbar',
     'zope.sqlalchemy',
     'waitress',
+    'pillow',
+    'jinja2',
+    'pyramid_jinja2'
     ]
 
 setup(name='web_app',
