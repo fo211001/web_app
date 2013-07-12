@@ -42,7 +42,7 @@ def my_view(request):
         one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'project': 'web_app'}
+    return {'one': one, 'project': 'web_app', 'login': True}
 
 
 @view_config(route_name='about', renderer='templates/about.jinja2')

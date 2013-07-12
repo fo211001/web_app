@@ -20,7 +20,9 @@
 
 			</div>
 			<div class='sn'>
-                <a href="/logout">Выход</a>
+                {% if login %}
+                    <a href="/logout">Выход</a>
+                {% endif %}
 				<a href="/about">О проекте</a>
 				<a href="#" class="icon vk"></a>
 				<a href="#" class="icon fb"></a>
