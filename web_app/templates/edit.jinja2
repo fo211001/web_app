@@ -1,20 +1,20 @@
 {% extends 'mytemplate.jinja2' %}
 {% block content %}
 
-<form method="post" >
-   <center>
-       <p><b>Название песни:</b><br>
-        <input type="text" size="80" name="title" value= "{{ song_title }}">
-       <p><b>Тональность:</b><br>
-       <select name="base_chord">
-           {% for tone in tones %}
-           <option value="{{ tone }}" {% if tone == base_chord %} selected {% endif %}>{{ tone }}</option>
-        {% endfor %}
-       </select>
-       <p><b>Текст песни:</b><br>
-        <textarea name="song_text" rows="20" cols="80">{{ song_text }}</textarea>
+<form method="post" xmlns="http://www.w3.org/1999/html">
+<center>
+    <br><b>Название песни:</b>
+        <input type="text" size="40" name="title" value= "{{ song_title }}">
+    <b>Тональность:</b>
+        <select name="base_chord">
+            {% for tone in tones %}
+                <option value="{{ tone }}" {% if tone == base_chord %} selected {% endif %}>{{ tone }}</option>
+            {% endfor %}
+        </select>
+
+        <br><textarea name="song_text" rows="20" cols="120">{{ song_text }}</textarea></br>
            <Br><input type="submit" value="Готово">
-   </center>
+</center>
   </p>
 
  </form>
