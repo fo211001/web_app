@@ -19,8 +19,6 @@ engine = create_engine('sqlite:///foo.db')
 session_factory = sessionmaker(bind=engine)
 Session = scoped_session(session_factory)
 
-
-
 def rndstr(length=32):
         chars = string.ascii_letters + string.digits
         return ''.join(
@@ -91,8 +89,6 @@ class User(Base):
 
 class WebSong(Base):
 
-    Base = declarative_base()
-    Base.metadata.create_all(engine)
 
     __tablename__ = "songs"
 

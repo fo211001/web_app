@@ -8,7 +8,7 @@ from sqlalchemy.exc import DBAPIError
 from .models import (
     DBSession,
     MyModel,
-    )
+)
 from web_app.user import login, register
 
 from song.parse import parse_text
@@ -59,7 +59,7 @@ def chords_view(request):
 def get_current_user(request):
     id = authenticated_userid(request)
     session = DBSession()
-    return session.query(User).get(id)
+    return session.query(User).filter(User.id == id)
 
 
 @view_config(route_name='login', renderer='templates/login.jinja2')
@@ -108,7 +108,7 @@ def registration_view(request):
         'login': "",
         'next': nxt,
         'failed_attempt': did_fail,
-        }
+    }
 
 
 @view_config(route_name='add', renderer='templates/add.jinja2')
@@ -123,6 +123,7 @@ def add_view(request):
         return {'song': song_text(song, song.base_chord)}
     return {}
 
+
 @view_config(route_name='songs', renderer='templates/songs.jinja2')
 def songs(request):
     user = get_current_user(request)
@@ -130,8 +131,6 @@ def songs(request):
     for songs in user.song:
         user_songs_titles.append(songs.title)
     return {'songs': user_songs_titles}
-
-
 
     conn_err_msg = """
 Pyramid is having a problem using your SQL database.  The problem
