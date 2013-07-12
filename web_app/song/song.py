@@ -6,13 +6,16 @@ class Song(object):
         self._couplets = couplets or []
         self._base_chord = base_chord
      
-    @ property   
+    @property
     def couplets (self):
         "Возвращает список из объектов Couplet"
         return self._couplets 
 
-    @ property
+    @property
     def base_chord (self):
         "Возвращает объект Chord"
         return self._base_chord
 
+    @base_chord.setter
+    def base_chord (self, value):
+        self._base_chord = value

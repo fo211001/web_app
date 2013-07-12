@@ -5,6 +5,12 @@
    <center>
        <p><b>Название песни:</b><br>
         <input type="text" size="80" name="title" value= "{{ song_title }}">
+       <p><b>Тональность:</b><br>
+       <select name="base_chord">
+           {% for tone in tones %}
+           <option value="{{ tone }}" {% if tone == base_chord %} selected {% endif %}>{{ tone }}</option>
+        {% endfor %}
+       </select>
        <p><b>Текст песни:</b><br>
         <textarea name="song_text" rows="20" cols="80">{{ song_text }}</textarea>
            <Br><input type="submit" value="Готово">

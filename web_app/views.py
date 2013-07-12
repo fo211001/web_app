@@ -11,7 +11,7 @@ from .models import (
     register
 )
 
-
+from song.chord import all_chord_tones
 from song.parse import parse_text
 from song.text import song_text
 
@@ -125,13 +125,14 @@ def edit_view(request):
     web_song = DBSession().query(WebSong).get(song_id)
     if "song_text" in request.POST:
         song = parse_text(request.POST["song_text"])
+        song.base_chord = request.POST["base_chord"]
         web_song.song = song
         web_song.title = request.POST["title"]
         # import pdb; pdb.set_trace()
         if authenticated_userid(request) != web_song.user_id:
             raise HTTPForbidden()
         DBSession().commit()
-    return {'song_text': song_text(web_song.song, web_song.song.base_chord), 'song_title': web_song.title}
+    return {'song_text': song_text(web_song.song, web_song.song.base_chord), 'song_title': web_song.title, 'tones':all_chord_tones, 'base_chord': web_song.song.base_chord}
 
 
 
