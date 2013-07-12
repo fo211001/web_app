@@ -11,6 +11,9 @@ from .models import (
     )
 from web_app.user import login, register
 
+from song.parse import parse_text
+from user import User
+
 
 @forbidden_view_config()
 def forbidden_view(request):
@@ -50,6 +53,10 @@ def about_view(request):
 def chords_view(request):
     return {}
 
+def get_current_user(request):
+    id = authenticated_userid(request)
+    session = DBSession()
+    return session.query(User).get(id)
 
 @view_config(route_name='login', renderer='templates/login.jinja2')
 def login_view(request):
@@ -59,7 +66,7 @@ def login_view(request):
     if 'email' in request.POST:
         #LOGIN PROCESSING
         if login(request.POST["email"], request.POST["password"]):
-            headers = remember(request, email)
+            headers = remember(request, id)
             return HTTPFound(location=nxt, headers=headers)
         else:
             did_fail = True
@@ -82,6 +89,15 @@ def registration_view(request):
         if register(request.POST['name'], request.POST['email'], request.POST['password']):
             return {'status': "зарегистрированы!".decode('utf-8')}
     return {}
+
+
+@view_config(route_name='add', renderer='templates/add.jinja2')
+def add_view(request):
+    if "text" in request.POST:
+        song = parse_text(request.POST['text'])
+        user = get_current_user(request)
+        user.songs.append(song)
+        DBSession().commit()
 
 
 
