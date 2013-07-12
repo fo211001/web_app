@@ -12,7 +12,8 @@ from .models import (
 from web_app.user import login, register
 
 from song.parse import parse_text
-from user import User
+from user import User, WebSong
+from song.text import song_text
 
 
 @forbidden_view_config()
@@ -105,10 +106,11 @@ def registration_view(request):
 def add_view(request):
     if "text" in request.POST:
         song = parse_text(request.POST['text'])
+        web_song = WebSong(song=song, title=request.POST['title'])
         user = get_current_user(request)
-        user.songs.append(song)
+        user.songs.append(web_song)
         DBSession().commit()
-        return {'song': str(song)}
+        return {'song': song_text(song, song.base_chord)}
     return {}
 
     conn_err_msg = """

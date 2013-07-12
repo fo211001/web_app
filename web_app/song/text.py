@@ -71,5 +71,5 @@ def couplet_text(couplet, main_chord):
     return "\r\n".join(lines)
 
 
-def print_song(song, base_chord):
+def song_text(song, base_chord):
     return "\r\n".join([couplet_text(i, base_chord) for i in song.couplets])

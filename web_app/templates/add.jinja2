@@ -3,14 +3,17 @@
 
 <form method="post" >
    <center>
+       <p><b>Введите название песни:</b><br>
+        <input type="text" size="80" name="title">
        <p><b>Введите песню:</b><br>
-        <input type="text" size="40" name="text">
+        <textarea name="text" rows="20" cols="80">{{ song }}</textarea>
            <Br><input type="submit" value="Готово">
+
    </center>
   </p>
 
  </form>
-    <h2>Песня {{ song }}</h2>
+
 
 
 {% endblock %}

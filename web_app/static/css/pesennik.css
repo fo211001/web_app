@@ -85,3 +85,7 @@ body{
 .sn a.ok {
 	background-position: -52px 0;
 }
+
+input, textarea, .uneditable-input{
+    width: auto !important;
+}
