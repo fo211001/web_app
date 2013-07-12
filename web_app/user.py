@@ -87,7 +87,6 @@ class User(Base):
 class WebSong(Base):
 
     Base.metadata.create_all(engine)
-    Base = declarative_base()
 
     __tablename__ = "songs"
 

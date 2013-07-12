@@ -1,3 +1,4 @@
+#coding: utf-8
 from pyramid.request import Request
 from pyramid.response import Response
 from pyramid.view import view_config
@@ -41,7 +42,7 @@ def login_view(request):
 def registration_view(request):
     if "name" and "email" and "password" in request.POST:
         if register(request.POST['name'], request.POST['email'], request.POST['password']):
-            return {'status': "Register!"}
+            return {'status': "зарегистрированы!".decode('utf-8')}
     return {}
 
 
