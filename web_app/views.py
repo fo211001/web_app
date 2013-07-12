@@ -31,6 +31,7 @@ def auth_required(func):
         if owner is None:
             raise HTTPForbidden()
         return func(request)
+
     return wrapper
 
 
@@ -53,15 +54,16 @@ def about_view(request):
 def chords_view(request):
     return {}
 
+
 def get_current_user(request):
     id = authenticated_userid(request)
     session = DBSession()
     return session.query(User).get(id)
 
+
 @view_config(route_name='login', renderer='templates/login.jinja2')
 def login_view(request):
     nxt = request.params.get('next') or request.route_url('home')
-    email = ''
     did_fail = False
     if 'email' in request.POST:
         #LOGIN PROCESSING
@@ -76,11 +78,13 @@ def login_view(request):
         'failed_attempt': did_fail,
     }
 
+
 @view_config(route_name='logout')
 def logout_view(request):
     headers = forget(request)
     loc = request.route_url('home')
     return HTTPFound(location=loc, headers=headers)
+
 
 @view_config(route_name='favicon')
 def favicon_view(request):
@@ -90,10 +94,20 @@ def favicon_view(request):
 
 @view_config(route_name='registration', renderer='templates/registration.jinja2')
 def registration_view(request):
-    if "name" and "email" and "password" in request.POST:
-        if register(request.POST['name'], request.POST['email'], request.POST['password']):
-            return {'status': "зарегистрированы!".decode('utf-8')}
-    return {}
+    nxt = request.params.get('next') or request.route_url('home')
+    did_fail = False
+    if 'email' in request.POST:
+        #LOGIN PROCESSING
+        if register(request.POST["name"], request.POST["email"], request.POST["password"]):
+            headers = remember(request, id)
+            return HTTPFound(location=nxt, headers=headers)
+        else:
+            did_fail = True
+    return {
+        'login': "",
+        'next': nxt,
+        'failed_attempt': did_fail,
+        }
 
 
 @view_config(route_name='add', renderer='templates/add.jinja2')
@@ -103,9 +117,8 @@ def add_view(request):
         user = get_current_user(request)
         user.songs.append(song)
         DBSession().commit()
-
-
-
+        return {'song': str(song)}
+    return {}
 
     conn_err_msg = """
 Pyramid is having a problem using your SQL database.  The problem
