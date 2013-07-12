@@ -1,4 +1,16 @@
 {% extends 'mytemplate.jinja2' %}
 {% block content %}
 
+<form method="post" >
+   <center>
+       <p><b>Введите песню:</b><br>
+        <input type="text" size="40" name="text">
+           <Br><input type="submit" value="Готово">
+   </center>
+  </p>
+
+ </form>
+    <h2>Песня {{ song }}</h2>
+
+
 {% endblock %}

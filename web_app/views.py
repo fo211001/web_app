@@ -31,6 +31,7 @@ def auth_required(func):
         if owner is None:
             raise HTTPForbidden()
         return func(request)
+
     return wrapper
 
 
@@ -53,10 +54,12 @@ def about_view(request):
 def chords_view(request):
     return {}
 
+
 def get_current_user(request):
     id = authenticated_userid(request)
     session = DBSession()
     return session.query(User).get(id)
+
 
 @view_config(route_name='login', renderer='templates/login.jinja2')
 def login_view(request):
@@ -76,11 +79,13 @@ def login_view(request):
         'failed_attempt': did_fail,
     }
 
+
 @view_config(route_name='logout')
 def logout_view(request):
     headers = forget(request)
     loc = request.route_url('home')
     return HTTPFound(location=loc, headers=headers)
+
 
 @view_config(route_name='favicon')
 def favicon_view(request):
@@ -103,9 +108,8 @@ def add_view(request):
         user = get_current_user(request)
         user.songs.append(song)
         DBSession().commit()
-
-
-
+        return {'song': str(song)}
+    return {}
 
     conn_err_msg = """
 Pyramid is having a problem using your SQL database.  The problem
