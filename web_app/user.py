@@ -14,14 +14,19 @@ import random
 import string  # pylint: disable=W0402
 
 
+
 engine = create_engine('sqlite:///foo.db')
 session_factory = sessionmaker(bind=engine)
 Session = scoped_session(session_factory)
+
+
 
 def rndstr(length=32):
         chars = string.ascii_letters + string.digits
         return ''.join(
             random.choice(chars) for x in range(length))
+
+
 
 class User(Base):
     """ User class for keeping employee info & credentials """
@@ -86,6 +91,7 @@ class User(Base):
 
 class WebSong(Base):
 
+    Base = declarative_base()
     Base.metadata.create_all(engine)
 
     __tablename__ = "songs"

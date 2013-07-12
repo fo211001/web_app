@@ -112,6 +112,7 @@ def registration_view(request):
 
 
 @view_config(route_name='add', renderer='templates/add.jinja2')
+@auth_required
 def add_view(request):
     if "text" in request.POST:
         song = parse_text(request.POST['text'])
@@ -128,7 +129,7 @@ def songs(request):
     user_songs_titles = []
     for songs in user.song:
         user_songs_titles.append(songs.title)
-    return {'songs':user_songs_titles}
+    return {'songs': user_songs_titles}
 
 
 
