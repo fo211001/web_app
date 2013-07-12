@@ -119,20 +119,23 @@ class EmailExistError(Exception):
 
 
 def register(name, email, password):
-    session = DBSession()
-    query = session.query(User).filter(User.email == email)
-    try:
-        user = query.one()
-        #raise EmailExistError(u'Такой почтовый ящик уже существует')
+    if name and email and password:
+        session = DBSession()
+        query = session.query(User).filter(User.email == email)
+        try:
+            user = query.one()
+            #raise EmailExistError(u'Такой почтовый ящик уже существует')
+            return False
+        except NoResultFound:
+            # Создаем нового пользователя
+            user = User(name=name.decode('utf-8'), email=email)
+            ##TODO SMTP mail
+            user.password = password
+            session.add(user)
+            session.commit()
+            return user
+    else:
         return False
-    except NoResultFound:
-        # Создаем нового пользователя
-        user = User(name=name.decode('utf-8'), email=email)
-        ##TODO SMTP mail
-        user.password = password
-        session.add(user)
-        session.commit()
-        return user
 
 def login(email, password):
     """
