@@ -1,6 +1,13 @@
 {% extends 'mytemplate.jinja2' %}
 {% block content %}
 
-<h1>About {{ songs }}</h1>
+<ul>
+{% for song in songs %}
+  <li><a href="/edit/{{ song.id }}">{{ song.title }}</a></li>
+{% endfor %}
+</ul>
+
+
+    <a href="/add">Добавить песню</a>
 
 {% endblock %}

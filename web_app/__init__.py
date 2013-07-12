@@ -1,7 +1,6 @@
 from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
-from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound
 from .models import (
     DBSession,
@@ -10,8 +9,10 @@ from .models import (
 
 #-----4444
 
+
 def not_found(request):
     return HTTPNotFound('Not found, bro.')
+
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
