@@ -111,7 +111,8 @@ def register(name, email, password):
     query = session.query(User).filter(User.email == email)
     try:
         user = query.one()
-        raise EmailExistError('Такой почтовый ящик уже существует')
+        #raise EmailExistError(u'Такой почтовый ящик уже существует')
+        return False
     except NoResultFound:
         # Создаем нового пользователя
         user = User(name=name.decode('utf-8'), email=email)

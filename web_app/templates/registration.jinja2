@@ -9,11 +9,13 @@
        <p><b>Введите email:</b><br>
         <input type="text" size="40" name="email">
     <p><b>Введите пароль:</b><br>
-        <input type="text" size="40" name="password">
-    <Br><input type="submit">
+        <input type="password" size="40" name="password">
+    <Br><input type="submit" value="Зарегистрироваться">
    </center>
 
  </form>
-    <h1>Вы {{ status }}</h1>
+    {% if failed_attempt %}
+        <center><h3>Такой пользователь уже существует!</h3></center>
+    {% endif %}
 
 {% endblock %}

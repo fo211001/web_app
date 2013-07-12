@@ -43,7 +43,7 @@ def my_view(request):
         one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'project': 'web_app'}
+    return {'one': one, 'project': 'web_app', 'login': True}
 
 
 @view_config(route_name='about', renderer='templates/about.jinja2')
@@ -65,7 +65,6 @@ def get_current_user(request):
 @view_config(route_name='login', renderer='templates/login.jinja2')
 def login_view(request):
     nxt = request.params.get('next') or request.route_url('home')
-    email = ''
     did_fail = False
     if 'email' in request.POST:
         #LOGIN PROCESSING
@@ -96,10 +95,20 @@ def favicon_view(request):
 
 @view_config(route_name='registration', renderer='templates/registration.jinja2')
 def registration_view(request):
-    if "name" and "email" and "password" in request.POST:
-        if register(request.POST['name'], request.POST['email'], request.POST['password']):
-            return {'status': "зарегистрированы!".decode('utf-8')}
-    return {}
+    nxt = request.params.get('next') or request.route_url('home')
+    did_fail = False
+    if 'email' in request.POST:
+        #LOGIN PROCESSING
+        if register(request.POST["name"], request.POST["email"], request.POST["password"]):
+            headers = remember(request, id)
+            return HTTPFound(location=nxt, headers=headers)
+        else:
+            did_fail = True
+    return {
+        'login': "",
+        'next': nxt,
+        'failed_attempt': did_fail,
+        }
 
 
 @view_config(route_name='add', renderer='templates/add.jinja2')
