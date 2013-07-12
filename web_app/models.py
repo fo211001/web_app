@@ -128,7 +128,7 @@ def register(name, email, password):
             return False
         except NoResultFound:
             # Создаем нового пользователя
-            user = User(name=name.decode('utf-8'), email=email)
+            user = User(name=name, email=email)
             ##TODO SMTP mail
             user.password = password
             session.add(user)
