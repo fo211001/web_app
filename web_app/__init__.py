@@ -37,6 +37,7 @@ def main(global_config, **settings):
     config.add_route('favicon', '/favicon')
     config.add_route('registration', '/registration')
     config.add_route('add', '/add')
+    config.add_route('edit', '/edit/{song_id}')
     config.add_route('songs', '/songs')
     config.add_notfound_view(not_found, append_slash=True)
     config.scan()

@@ -118,6 +118,23 @@ def add_view(request):
     return {}
 
 
+@view_config(route_name='edit', renderer='templates/edit.jinja2')
+@auth_required
+def edit_view(request):
+    song_id = request.matchdict['song_id']
+    web_song = DBSession().query(WebSong).get(song_id)
+    if "song_text" in request.POST:
+        song = parse_text(request.POST["song_text"])
+        web_song.song = song
+        web_song.title = request.POST["title"]
+        # import pdb; pdb.set_trace()
+        if authenticated_userid(request) != web_song.user_id:
+            raise HTTPForbidden()
+        DBSession().commit()
+    return {'song_text': song_text(web_song.song, web_song.song.base_chord), 'song_title': web_song.title}
+
+
+
 @view_config(route_name='home', renderer='templates/songs.jinja2')
 @auth_required
 def songs(request):
