@@ -4,13 +4,15 @@
 
 <form method="post" >
    <center>
-       <h1>Пожалуйста, залогинтесь</h1>
+       <h2>Пожалуйста, залогинтесь или зарегистрируйтесь</h2>
        <input type="hidden" size="40" name="next" value="{{ next }}">
        <p><b>Введите логин:</b><br>
         <input type="text" size="40" name="email">
     <p><b>Введите пароль:</b><br>
         <input type="password" size="40" name="password">
     <Br><input type="submit" value="Войти">
+       <h3><a href="/registration">Регистрация</a></h3>
+
    </center>
   </p>
     {% if failed_attempt %}
