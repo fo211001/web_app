@@ -1,3 +1,4 @@
+from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from pyramid.response import Response
@@ -18,7 +19,10 @@ def main(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
-    config = Configurator(settings=settings)
+    config = Configurator(
+        settings=settings,
+        authentication_policy=SessionAuthenticationPolicy())
+    config.include("pyramid_beaker")
     config.include('pyramid_jinja2')
     config.add_jinja2_search_path("web_app:templates")
     config.add_static_view('static', 'static', cache_max_age=3600)
@@ -27,6 +31,7 @@ def main(global_config, **settings):
     config.add_route('chords', '/chords')
     config.add_route('about', '/about')
     config.add_route('login', '/login')
+    config.add_route('logout', '/logout')
     config.add_route('registration', '/registration')
     config.add_notfound_view(not_found, append_slash=True)
     config.scan()

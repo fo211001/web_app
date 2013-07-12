@@ -1,18 +1,22 @@
 {% extends 'mytemplate.jinja2' %}
 {% block content %}
+    {% if failed_attempt %}
+        <h1>Логин и пароль не подходят.</h1>
+    {% endif %}
 
 <form method="post" >
    <center>
        <h1>Login</h1>
+       <input type="hidden" size="40" name="next" value="{{ next }}">
        <p><b>Введите логин:</b><br>
         <input type="text" size="40" name="email">
     <p><b>Введите пароль:</b><br>
-        <input type="text" size="40" name="password">
+        <input type="password" size="40" name="password">
     <Br><input type="submit">
    </center>
   </p>
 
  </form>
-    <h1>Статус {{ status }}</h1>
+
 
 {% endblock %}

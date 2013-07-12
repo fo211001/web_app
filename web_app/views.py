@@ -1,7 +1,9 @@
 #coding: utf-8
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.request import Request
 from pyramid.response import Response
-from pyramid.view import view_config
+from pyramid.security import remember, authenticated_userid, forget
+from pyramid.view import view_config, forbidden_view_config
 from sqlalchemy.exc import DBAPIError
 from .models import (
     DBSession,
@@ -10,7 +12,27 @@ from .models import (
 from web_app.user import login, register
 
 
+@forbidden_view_config()
+def forbidden_view(request):
+    # do not allow a user to login if they are already logged in
+    if authenticated_userid(request):
+        return HTTPForbidden()
+
+    loc = request.route_url('login', _query=(('next', request.path),))
+    return HTTPFound(location=loc)
+
+
+def auth_required(func):
+    def wrapper(request):
+        owner = authenticated_userid(request)
+        if owner is None:
+            raise HTTPForbidden()
+        return func(request)
+    return wrapper
+
+
 @view_config(route_name='home', renderer='templates/mytemplate.jinja2')
+@auth_required
 def my_view(request):
     try:
         one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
@@ -31,12 +53,28 @@ def chords_view(request):
 
 @view_config(route_name='login', renderer='templates/login.jinja2')
 def login_view(request):
-    if "email" and "password" in request.POST:
-        if login(request.POST['email'], request.POST['password']):
-        #return {"email": login(request.POST['email'], request.POST['password'])}
-            return {'status': "Login!"}
-        return {'status': "Bad login!"}
-    return {}
+    nxt = request.params.get('next') or request.route_url('home')
+    email = ''
+    did_fail = False
+    if 'email' in request.POST:
+        #LOGIN PROCESSING
+        if login(request.POST["email"], request.POST["password"]):
+            headers = remember(request, email)
+            return HTTPFound(location=nxt, headers=headers)
+        else:
+            did_fail = True
+    return {
+        'login': "",
+        'next': nxt,
+        'failed_attempt': did_fail,
+    }
+
+@view_config(route_name='logout')
+def logout_view(request):
+    headers = forget(request)
+    loc = request.route_url('home')
+    return HTTPFound(location=loc, headers=headers)
+
 
 @view_config(route_name='registration', renderer='templates/registration.jinja2')
 def registration_view(request):

@@ -16,7 +16,8 @@ requires = [
     'waitress',
     'pillow',
     'jinja2',
-    'pyramid_jinja2'
+    'pyramid_jinja2',
+    'pyramid_beaker'
     ]
 
 setup(name='web_app',
