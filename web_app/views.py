@@ -92,8 +92,9 @@ def registration_view(request):
     nxt = request.params.get('next') or request.route_url('home')
     did_fail = False
     if 'email' in request.POST:
-        if register(request.POST["name"], request.POST["email"], request.POST["password"]):
-            headers = remember(request, id)
+        user = register(request.POST["name"], request.POST["email"], request.POST["password"])
+        if user:
+            headers = remember(request, user.id)
             return HTTPFound(location=nxt, headers=headers)
         else:
             did_fail = True
