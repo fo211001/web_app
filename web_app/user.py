@@ -25,6 +25,7 @@ def rndstr(length=32):
 
 class User(Base):
     """ User class for keeping employee info & credentials """
+
     __tablename__ = "user"
     _password = None
 
@@ -34,6 +35,8 @@ class User(Base):
     email = Column(String(50))
     _salt = Column("salt", String(32))
     hpass = Column(String(32))
+
+
 
     @hybrid_property
     def salt(self):
@@ -82,6 +85,10 @@ class User(Base):
 
 
 class WebSong(Base):
+
+    Base.metadata.create_all(engine)
+    Base = declarative_base()
+
     __tablename__ = "songs"
 
     id = Column(Integer, primary_key=True)
@@ -113,9 +120,7 @@ def register(name, email, password):
         user.password = password
         session.add(user)
         session.commit()
-        #return user
-        return True
-
+        return user
 
 def login(email, password):
     """

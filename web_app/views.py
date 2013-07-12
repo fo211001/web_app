@@ -34,6 +34,7 @@ def login_view(request):
         if login(request.POST['email'], request.POST['password']):
         #return {"email": login(request.POST['email'], request.POST['password'])}
             return {'status': "Login!"}
+        return {'status': "Bad login!"}
     return {}
 
 @view_config(route_name='registration', renderer='templates/registration.jinja2')
