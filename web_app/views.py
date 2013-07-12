@@ -12,7 +12,7 @@ from .models import (
 from web_app.user import login, register
 
 from song.parse import parse_text
-from user import User, WebSong
+from user import User, WebSong, engine, Base
 from song.text import song_text
 
 
@@ -120,6 +120,7 @@ def add_view(request):
     if "text" in request.POST:
         song = parse_text(request.POST['text'])
         web_song = WebSong(song=song, title=request.POST['title'])
+        Base.metadata.create_all(engine)
         user = get_current_user(request)
         user.songs.append(web_song)
         DBSession().commit()

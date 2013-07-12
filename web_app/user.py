@@ -17,7 +17,7 @@ engine = create_engine('sqlite:///foo.db')
 
 session_factory = sessionmaker(bind=engine)
 Session = scoped_session(session_factory)
-
+Base.metadata.create_all(engine)
 
 
 def rndstr(length=32):
@@ -89,7 +89,6 @@ class User(Base):
 
 
 class WebSong(Base):
-
     __tablename__ = "songs"
 
     id = Column(Integer, primary_key=True)
@@ -109,8 +108,8 @@ class EmailExistError(Exception):
 
 
 def register(name, email, password):
-    Base.metadata.create_all(engine)
     session = Session()
+    Base.metadata.create_all(engine)
     query = session.query(User).filter(User.email == email)
     try:
         user = query.one()
@@ -132,6 +131,7 @@ def login(email, password):
     :param password: пароль введенный пользовытелем
     :return: True - пользователь найден в базе
     """
+
     session = Session()
     query = session.query(User).filter(User.email == email)
     try:
