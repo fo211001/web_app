@@ -75,6 +75,11 @@ def logout_view(request):
     loc = request.route_url('home')
     return HTTPFound(location=loc, headers=headers)
 
+@view_config(route_name='favicon')
+def favicon_view(request):
+    headers = forget(request)
+    return HTTPFound(location='/static/images/favicon.ico', headers=headers)
+
 
 @view_config(route_name='registration', renderer='templates/registration.jinja2')
 def registration_view(request):

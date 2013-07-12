@@ -32,6 +32,7 @@ def main(global_config, **settings):
     config.add_route('about', '/about')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
+    config.add_route('favicon', '/favicon')
     config.add_route('registration', '/registration')
     config.add_notfound_view(not_found, append_slash=True)
     config.scan()
