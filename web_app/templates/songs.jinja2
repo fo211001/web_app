@@ -2,12 +2,13 @@
 {% block content %}
 
 <ul>
+<h2><a href="/add">Добавить песню</a></h2>
 {% for song in songs %}
   <li><a href="/edit/{{ song.id }}">{{ song.title }}</a></li>
 {% endfor %}
 </ul>
 
 
-    <a href="/add">Добавить песню</a>
+
 
 {% endblock %}

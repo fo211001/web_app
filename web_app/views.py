@@ -92,7 +92,6 @@ def registration_view(request):
     nxt = request.params.get('next') or request.route_url('home')
     did_fail = False
     if 'email' in request.POST:
-        #LOGIN PROCESSING
         if register(request.POST["name"], request.POST["email"], request.POST["password"]):
             headers = remember(request, id)
             return HTTPFound(location=nxt, headers=headers)
@@ -139,7 +138,7 @@ def edit_view(request):
 @auth_required
 def songs(request):
     user = get_current_user(request)
-    return {'songs': user.songs}
+    return {'songs': user.songs, 'login': True}
 
     conn_err_msg = """
 Pyramid is having a problem using your SQL database.  The problem
