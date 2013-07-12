@@ -113,7 +113,7 @@ def add_view(request):
         user = get_current_user(request)
         user.songs.append(web_song)
         DBSession().commit()
-        return {'song': song_text(song, song.base_chord)}
+        return HTTPFound(location='/edit/{}'.format(web_song.id))
     return {}
 
 
