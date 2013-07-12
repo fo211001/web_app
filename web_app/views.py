@@ -122,6 +122,16 @@ def add_view(request):
         return {'song': song_text(song, song.base_chord)}
     return {}
 
+@view_config(route_name='songs', renderer='templates/songs.jinja2')
+def songs(request):
+    user = get_current_user(request)
+    user_songs_titles = []
+    for songs in user.song:
+        user_songs_titles.append(songs.title)
+    return {'songs':user_songs_titles}
+
+
+
     conn_err_msg = """
 Pyramid is having a problem using your SQL database.  The problem
 might be caused by one of the following things:
