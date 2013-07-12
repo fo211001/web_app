@@ -1,20 +1,19 @@
 #coding: utf-8
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.request import Request
+from pyramid.response import Response
 from pyramid.security import remember, authenticated_userid, forget
 from pyramid.view import view_config, forbidden_view_config
 from sqlalchemy.exc import DBAPIError
 from .models import (
     DBSession,
-    User,
-    WebSong,
-    login,
-    register
+    MyModel,
 )
+from web_app.user import login, register
 
-from song.chord import all_chord_tones
 from song.parse import parse_text
+from user import User, WebSong
 from song.text import song_text
-
 
 
 @forbidden_view_config()
@@ -37,6 +36,16 @@ def auth_required(func):
     return wrapper
 
 
+@view_config(route_name='home', renderer='templates/mytemplate.jinja2')
+@auth_required
+def my_view(request):
+    try:
+        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
+    except DBAPIError:
+        return Response(conn_err_msg, content_type='text/plain', status_int=500)
+    return {'one': one, 'project': 'web_app', 'login': True}
+
+
 @view_config(route_name='about', renderer='templates/about.jinja2')
 def about_view(request):
     return {'About': "us"}
@@ -48,11 +57,9 @@ def chords_view(request):
 
 
 def get_current_user(request):
-    id_= authenticated_userid(request)
-    # import pdb; pdb.set_trace()
+    id = authenticated_userid(request)
     session = DBSession()
-
-    return session.query(User).get(id_)
+    return session.query(User).filter(User.id == id)
 
 
 @view_config(route_name='login', renderer='templates/login.jinja2')
@@ -61,9 +68,8 @@ def login_view(request):
     did_fail = False
     if 'email' in request.POST:
         #LOGIN PROCESSING
-        user = login(request.POST["email"], request.POST["password"])
-        if user:
-            headers = remember(request, user.id)
+        if login(request.POST["email"], request.POST["password"]):
+            headers = remember(request, id)
             return HTTPFound(location=nxt, headers=headers)
         else:
             did_fail = True
@@ -92,9 +98,9 @@ def registration_view(request):
     nxt = request.params.get('next') or request.route_url('home')
     did_fail = False
     if 'email' in request.POST:
-        user = register(request.POST["name"], request.POST["email"], request.POST["password"])
-        if user:
-            headers = remember(request, user.id)
+        #LOGIN PROCESSING
+        if register(request.POST["name"], request.POST["email"], request.POST["password"]):
+            headers = remember(request, id)
             return HTTPFound(location=nxt, headers=headers)
         else:
             did_fail = True
@@ -114,43 +120,17 @@ def add_view(request):
         user = get_current_user(request)
         user.songs.append(web_song)
         DBSession().commit()
-        return HTTPFound(location='/edit/{}'.format(web_song.id))
+        return {'song': song_text(song, song.base_chord)}
     return {}
 
 
-@view_config(route_name='edit', renderer='templates/edit.jinja2')
-@auth_required
-def edit_view(request):
-    try:
-        song_id = request.matchdict['song_id']
-        web_song = DBSession().query(WebSong).get(song_id)
-        if "song_text" in request.POST:
-            song = parse_text(request.POST["song_text"])
-            song.base_chord = request.POST["base_chord"]
-            web_song.song = song
-            web_song.title = request.POST["title"]
-            # import pdb; pdb.set_trace()
-            if authenticated_userid(request) != web_song.user_id:
-                raise HTTPForbidden()
-            DBSession().commit()
-        if "delete_song" in request.POST:
-            song_delete(song_id)
-            return HTTPFound(location='/')
-        return {'song_text': song_text(web_song.song, web_song.song.base_chord), 'song_title': web_song.title, 'tones':all_chord_tones, 'base_chord': web_song.song.base_chord}
-    except:
-        return HTTPFound(location='/')
-
-@view_config(route_name='home', renderer='templates/songs.jinja2')
-@auth_required
+@view_config(route_name='songs', renderer='templates/songs.jinja2')
 def songs(request):
     user = get_current_user(request)
-    return {'songs': user.songs, 'login': True}
-
-
-def song_delete(song_id):
-    web_song = DBSession().query(WebSong).get(song_id)
-    DBSession().delete(web_song)
-    DBSession().commit()
+    user_songs_titles = []
+    for songs in user.song:
+        user_songs_titles.append(songs.title)
+    return {'songs': user_songs_titles}
 
     conn_err_msg = """
 Pyramid is having a problem using your SQL database.  The problem

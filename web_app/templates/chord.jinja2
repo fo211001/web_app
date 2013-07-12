@@ -1,0 +1,36 @@
+{% extends 'mytemplate.jinja2' %}
+{% block content %}
+
+
+    <form method="post" >
+        <br>
+        <input type="checkbox" name="only_barre" value="1"><b>Только баррэ</b><br>
+        <br>
+        <input type="checkbox" name="without_barre" value="1"><b>Без баррэ</b><br>
+        <br>
+        <b>Максимальная дистанция между пальцами</b>
+        <input type="text" name="dist_text" value="3"><br>
+        <br>
+        <b>Со струнами:</b><br>
+        <input type="checkbox" name="first_cord" value="1" checked>1-я струна
+        <input type="checkbox" name="second_cord" value="1" checked>2-я струна
+        <input type="checkbox" name="third_cord" value="1" checked>3-я струна
+        <input type="checkbox" name="forth_cord" value="1" checked>4-я струна
+        <input type="checkbox" name="fifth_cord" value="1" checked>5-я струна
+        <input type="checkbox" name="sixth_cord" value="1" checked>6-я струна
+        <br><br>
+        <b>Максимальное количество пальцев</b><br>
+        <input type="text" name="max_count_fingers" value="4"><br>
+        <br>
+        <b>Минимальный и максимальный лад</b><br>
+        <input type="text" name="min_tune" value="0">
+        <input type="text" name="max_tune" value="14"><br>
+        <Br><input type="submit" value="Посмотреть аппликатуру" name="go">
+    </form>
+
+    {% for fingering in fingerings %}
+        <img src="/fingering/{{ fingering }}" alt="{{ fingering }}" title="{{ fingering }}" /><br><br>
+
+    {% endfor %}
+
+{% endblock %}
