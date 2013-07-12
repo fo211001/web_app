@@ -131,6 +131,9 @@ def edit_view(request):
         if authenticated_userid(request) != web_song.user_id:
             raise HTTPForbidden()
         DBSession().commit()
+    if "delete_song" in request.POST:
+        song_delete(song_id)
+        return HTTPFound(location='/')
     return {'song_text': song_text(web_song.song, web_song.song.base_chord), 'song_title': web_song.title, 'tones':all_chord_tones, 'base_chord': web_song.song.base_chord}
 
 
@@ -140,6 +143,12 @@ def edit_view(request):
 def songs(request):
     user = get_current_user(request)
     return {'songs': user.songs, 'login': True}
+
+
+def song_delete(song_id):
+    web_song = DBSession().query(WebSong).get(song_id)
+    DBSession().delete(web_song)
+    DBSession().commit()
 
     conn_err_msg = """
 Pyramid is having a problem using your SQL database.  The problem

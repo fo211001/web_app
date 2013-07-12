@@ -11,9 +11,10 @@
                 <option value="{{ tone }}" {% if tone == base_chord %} selected {% endif %}>{{ tone }}</option>
             {% endfor %}
         </select>
+    <b><input type="submit" value="Готово"></b>
 
         <br><textarea name="song_text" rows="20" cols="120">{{ song_text }}</textarea></br>
-           <Br><input type="submit" value="Готово">
+           <Br><input type="submit" value="Удалить" name="delete_song">
 </center>
   </p>
 
