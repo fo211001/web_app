@@ -13,11 +13,12 @@ import md5
 import random
 import string  # pylint: disable=W0402
 
-
-
 engine = create_engine('sqlite:///foo.db')
+
 session_factory = sessionmaker(bind=engine)
 Session = scoped_session(session_factory)
+
+
 
 def rndstr(length=32):
         chars = string.ascii_letters + string.digits
@@ -89,7 +90,6 @@ class User(Base):
 
 class WebSong(Base):
 
-
     __tablename__ = "songs"
 
     id = Column(Integer, primary_key=True)
@@ -109,6 +109,7 @@ class EmailExistError(Exception):
 
 
 def register(name, email, password):
+    Base.metadata.create_all(engine)
     session = Session()
     query = session.query(User).filter(User.email == email)
     try:
@@ -136,11 +137,11 @@ def login(email, password):
     try:
         user = query.one()
         if User.get_hashed_password(user, password) == user.hpass:
-            return True
+            return user
         else:
-            return False
+            return None
     except NoResultFound:
-        return False
+        return None
 
 
 def all_users():

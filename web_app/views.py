@@ -57,9 +57,11 @@ def chords_view(request):
 
 
 def get_current_user(request):
-    id = authenticated_userid(request)
+    id_= authenticated_userid(request)
+    # import pdb; pdb.set_trace()
     session = DBSession()
-    return session.query(User).filter(User.id == id)
+
+    return session.query(User).get(id_)
 
 
 @view_config(route_name='login', renderer='templates/login.jinja2')
@@ -68,8 +70,9 @@ def login_view(request):
     did_fail = False
     if 'email' in request.POST:
         #LOGIN PROCESSING
-        if login(request.POST["email"], request.POST["password"]):
-            headers = remember(request, id)
+        user = login(request.POST["email"], request.POST["password"])
+        if user:
+            headers = remember(request, user.id)
             return HTTPFound(location=nxt, headers=headers)
         else:
             did_fail = True
