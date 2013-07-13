@@ -193,7 +193,9 @@ def filters_for_fingerings(request):
         chord = request.matchdict['name']
         chord = chord.replace("_", "/").replace("-", "#")
         if "add_note" in request.POST:
-            chord += "/" + request.POST['add_note']
+            add_note = request.POST['add_note']
+            if add_note:
+                chord += "/" + add_note
         notes = musicals(chord)
         current_tone, current_mod, current_add_tone = parse_chord(chord)
         data.update({
