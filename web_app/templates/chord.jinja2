@@ -1,36 +1,92 @@
 {% extends 'mytemplate.jinja2' %}
 {% block content %}
-
+    <div class="navigation">
+    {% for urltone, tone in tones%}
+        {%if  current_tone == tone %}
+          <a href="/chord/{{urltone}}{{current_mod}}"><b>{{tone}}{{current_modification}}</b></a>
+        {% else %}
+          <a href="/chord/{{urltone}}{{current_mod}}">{{tone}}{{current_modification}}</a>
+        {% endif %}
+        &nbsp;
+    {% endfor %}
+    </div>
+    
+    {% if current_tone %}
+    <div class="navigation">
+    {% for urlmod, mod in modifications %}
+      {% if current_modification == mod %}
+      <a href="/chord/{{current_urltone}}{{urlmod}}"><b>{{current_tone}}{{mod}}</b></a>
+      {% else %}
+      <a href="/chord/{{current_urltone}}{{urlmod}}">{{current_tone}}{{mod}}</a>
+      {% endif %}
+        &nbsp;
+    {% endfor %}
+    </div>
 
     <form method="post" >
-        <br>
-        <input type="checkbox" name="only_barre" value="1"><b>Только баррэ</b><br>
-        <br>
-        <input type="checkbox" name="without_barre" value="1"><b>Без баррэ</b><br>
+        Добавочная нота (типа A/<b>D</b>)
+        <select name="add_note">
+                <option value=""> - нет - </option>
+            {% for urltone, tone in tones %}
+                {% if tone != current_tone %}
+                <option value="{{ tone }}" {% if tone == current_add_tone %} selected {% endif %}>{{ tone }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <h1>Аккорд
+        {% if current_add_tone %}
+            &laquo;{{current_tone}}{{current_modification}}/{{current_add_tone}}&raquo;
+        {% else %}
+            &laquo;{{current_tone}}{{current_modification}}&raquo;
+        {% endif %}
+        </h1>
+        <hr />
+    <div style='float:right;margin-right: 50px;'>
+        {% for fingering in fingerings %}
+            <img style='width:250px' src="/fingering/{{ fingering }}"
+                ="{{ fingering }}" title="{{ fingering }}" /><br><br>
+        {% endfor %}
+        {% if go and not fingerings %}
+        <h3>
+            Чего-то уж очень заковыристый аккорд, <br/>
+            не получилось у нас с аппликатурами.<br /><br />
+            Возможно, если вы умерите Ваши желания<br />
+            с помощью формы выше, Вам повезет.
+        {% endif %}
+    </div>
+        <input type="checkbox" name="only_barre"
+        {% if only_barre %} checked {% endif %}
+         id="barre_only"  value="1"><label for="barre_only"
+        style="display:inline-block">Только баррэ</label> &nbsp;
+
+        <input type="checkbox" name="without_barre"
+          id="without_barre"
+        {% if without_barre %} checked {% endif %}
+            value="1"><label for="without_barre" style="display:inline-block">Без баррэ</label><br>
         <br>
         <b>Максимальная дистанция между пальцами</b>
-        <input type="text" name="dist_text" value="3"><br>
+        <input type="text" name="dist_text" value="{{dist_text}}"><br>
         <br>
-        <b>Со струнами:</b><br>
-        <input type="checkbox" name="first_cord" value="1" checked>1-я струна
-        <input type="checkbox" name="second_cord" value="1" checked>2-я струна
-        <input type="checkbox" name="third_cord" value="1" checked>3-я струна
-        <input type="checkbox" name="forth_cord" value="1" checked>4-я струна
-        <input type="checkbox" name="fifth_cord" value="1" checked>5-я струна
-        <input type="checkbox" name="sixth_cord" value="1" checked>6-я струна
+        <b>со струнами:</b><br>
+        {% for i in range(1, 7) %}
+            <input type="checkbox" name="raw_cord" value="{{i}}"
+            {%if i in cord %} checked {% endif %}
+            id="cord_{{i}}_check">
+            <label for="cord_{{i}}_check" style='display:inline-block'>{{i}}-я струна</label>
+
+        {% endfor %}
         <br><br>
-        <b>Максимальное количество пальцев</b><br>
-        <input type="text" name="max_count_fingers" value="4"><br>
+        <b>Максимальное количество пальцев </b><br>
+        <input type="text" name="max_count_fingers" value="{{max_count_fingers}}">
+        <small>(баррэ считается за несколько пальцев, мы работаем над этим)</small>
         <br>
+        <br/>
         <b>Минимальный и максимальный лад</b><br>
-        <input type="text" name="min_tune" value="0">
-        <input type="text" name="max_tune" value="14"><br>
+        <input type="text" name="min_tune" value="{{min_tune}}">
+        <input type="text" name="max_tune" value="{{max_tune}}"><br>
         <Br><input type="submit" value="Посмотреть аппликатуру" name="go">
     </form>
 
-    {% for fingering in fingerings %}
-        <img src="/fingering/{{ fingering }}" alt="{{ fingering }}" title="{{ fingering }}" /><br><br>
-
-    {% endfor %}
+    {% endif %}
 
 {% endblock %}

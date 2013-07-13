@@ -1,41 +1,40 @@
 #coding: utf-8
-#from . import Base
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column,  String, Integer, PickleType, Text
+from sqlalchemy import Column,  String, Integer, PickleType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import (
     scoped_session,
     sessionmaker,
-    )
+)
 from pyramid.threadlocal import get_current_request
-from zope.sqlalchemy import ZopeTransactionExtension
+from pyramid.events import subscriber, NewRequest
 import md5
 import random
 import string  # pylint: disable=W0402
 
+# pylint: disable=C0103
 Base = declarative_base()
 DBSession = scoped_session(sessionmaker(), scopefunc=get_current_request)
 Base = declarative_base()
+# pylint: enable=C0103
 
-#
-# class MyModel(Base):
-#     __tablename__ = 'models'
-#     id = Column(Integer, primary_key=True)
-#     name = Column(Text, unique=True)
-#     value = Column(Integer)
-#
-#     def __init__(self, name, value):
-#         self.name = name
-#         self.value = value
+
+def close_db_connection(request):  # pylint: disable=W0613
+    DBSession.remove()
+
+
+@subscriber(NewRequest)
+def register_close_db_connection(event):
+    event.request.add_finished_callback(close_db_connection)
 
 
 def rndstr(length=32):
-        chars = string.ascii_letters + string.digits
-        return ''.join(
-            random.choice(chars) for x in range(length))
+    chars = string.ascii_letters + string.digits
+    return ''.join(
+        random.choice(chars) for x in range(length))
 
 
 class User(Base):
@@ -51,7 +50,6 @@ class User(Base):
     _salt = Column("salt", String(32))
     hpass = Column(String(32))
 
-
     @hybrid_property
     def salt(self):
         if self._salt:
@@ -65,8 +63,6 @@ class User(Base):
 
     @salt.setter
     def salt(self, value):
-        if not self._salt:
-            self._salt = rndstr(32)()
         self._salt = value
 
     @property
@@ -98,20 +94,22 @@ class User(Base):
         return mhash.hexdigest()
 
 
-class WebSong(Base):
+class WebSong(Base):  # pylint: disable=R0903
     __tablename__ = "songs"
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey(User.id))
 
-    title = Column(String)
+    title = Column(String(255))
     song = Column(PickleType)
     applicatures = Column(PickleType)
     user = relationship(User, backref="songs")
 
 
 def pas_gen():
-    return ''.join(random.choice(string.letters + string.digits) for i in range(10))
+    return ''.join(random.choice(
+        string.letters + string.digits
+    ) for i in range(10))
 
 
 class EmailExistError(Exception):
@@ -137,6 +135,7 @@ def register(name, email, password):
     else:
         return False
 
+
 def login(email, password):
     """
     Функция проверяет наличие почтового ящика в БД и сверяет пароль
@@ -159,12 +158,12 @@ def login(email, password):
 
 def all_users():
     session = DBSession()
-    for u in session.query(User):
-        print u.name, u.email
+    for user in session.query(User):
+        print user.name, user.email
 
 
 def del_all():
     session = DBSession
-    for u in session.query(User):
-        session.delete(u)
+    for user in session.query(User):
+        session.delete(user)
     session.commit()

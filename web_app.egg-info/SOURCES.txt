@@ -7,8 +7,10 @@ production.ini
 setup.cfg
 setup.py
 web_app/__init__.py
+web_app/login.py
 web_app/models.py
 web_app/tests.py
+web_app/user.py
 web_app/views.py
 web_app.egg-info/PKG-INFO
 web_app.egg-info/SOURCES.txt
@@ -45,7 +47,4 @@ web_app/static/css/bootstrap.min.css
 web_app/static/css/pesennik.css
 web_app/static/images/social-icons.png
 web_app/static/js/bootstrap.min.js
-web_app/templates/about.pt
 web_app/templates/chord.pt
-web_app/templates/chords.pt
-web_app/templates/mytemplate.pt
