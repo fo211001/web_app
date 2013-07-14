@@ -2,6 +2,7 @@ from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from pyramid.httpexceptions import HTTPNotFound
+from sqlalchemy.pool import NullPool
 from .models import (
     DBSession,
     Base,
@@ -17,7 +18,7 @@ def not_found(request):
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-    engine = engine_from_config(settings, 'sqlalchemy.')
+    engine = engine_from_config(settings, 'sqlalchemy.', poolclass=NullPool)
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
     Base.metadata.create_all(engine)
