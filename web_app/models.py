@@ -1,4 +1,7 @@
 #coding: utf-8
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -128,6 +131,30 @@ def register(name, email, password):
             # Создаем нового пользователя
             user = User(name=name, email=email)
             ##TODO SMTP mail
+            me = 'Moipesennik.ru'
+            you = 'To: ' + ', '.join(email)
+            server = 'smtp.moipesennik.ru'
+            port = 25
+            user_name = 'admin@moipesennik.ru'
+            ########################################пароль отправителя
+            user_passwd = ''
+            ########################################
+            msg = MIMEMultipart('mixed')
+            msg['Subject'] = 'Регистрация на Мойпесенник.ру'
+            msg['From'] = me
+            msg['To'] = email
+            msg.attach(MIMEText(u'Спасибо за регистрацию на сайте moipesennik.ru\nВаш логин: ' + email+'\nВаш пароль: '
+                                + password, 'plain'))
+            # Подключение
+            s = smtplib.SMTP(server, port)
+            s.ehlo()
+            s.starttls()
+            s.ehlo()
+            # Авторизация
+            s.login(user_name, user_passwd)
+            # Отправка пиьма
+            s.sendmail(me, email, msg.as_string())
+            s.quit()
             user.password = password
             session.add(user)
             session.commit()
