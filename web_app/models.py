@@ -121,16 +121,15 @@ class EmailExistError(Exception):
 
 def send_email(email, password):
     me = 'Moipesennik.ru'
-    you = 'To: ' + ', '.join(email)
-    server = 'smtp.moipesennik.ru'
+    server = 'smtp.mail.ru'
     port = 25
-    user_name = 'admin@moipesennik.ru'
-    user_passwd = ''#пароль отправителя
+    user_name = 'moipesennik@mail.ru'
+    user_passwd = '123456789w'#пароль отправителя
     msg = MIMEMultipart('mixed')
-    msg['Subject'] = 'Регистрация на Мойпесенник.ру'
+    msg['Subject'] = u'Регистрация на Мойпесенник.ру'
     msg['From'] = me
     msg['To'] = email
-    msg.attach(MIMEText(u'Спасибо за регистрацию на сайте moipesennik.ru\nВаш логин: ' + email + '\nВаш пароль: '
+    msg.attach(MIMEText(u'Спасибо за регистрацию на сайте moipesennik.ru\nВаш логин: ' + email + u'\nВаш пароль: '
                         + password, 'plain'))
     # Подключение
     s = smtplib.SMTP(server, port)
