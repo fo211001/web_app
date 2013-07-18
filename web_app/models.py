@@ -1,14 +1,17 @@
 #coding: utf-8
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column,  String, Integer, PickleType
+from sqlalchemy import Column, String, Integer, PickleType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import (
     scoped_session,
     sessionmaker,
-)
+    )
 from pyramid.threadlocal import get_current_request
 from pyramid.events import subscriber, NewRequest
 import md5
@@ -116,6 +119,30 @@ class EmailExistError(Exception):
     pass
 
 
+def send_email(email, password):
+    me = 'Moipesennik.ru'
+    server = 'smtp.mail.ru'
+    port = 25
+    user_name = 'moipesennik@mail.ru'
+    user_passwd = '123456789w'#пароль отправителя
+    msg = MIMEMultipart('mixed')
+    msg['Subject'] = u'Регистрация на Мойпесенник.ру'
+    msg['From'] = me
+    msg['To'] = email
+    msg.attach(MIMEText(u'Спасибо за регистрацию на сайте moipesennik.ru\nВаш логин: ' + email + u'\nВаш пароль: '
+                        + password, 'plain'))
+    # Подключение
+    s = smtplib.SMTP(server, port)
+    s.ehlo()
+    s.starttls()
+    s.ehlo()
+    # Авторизация
+    s.login(user_name, user_passwd)
+    # Отправка пиьма
+    s.sendmail(me, email, msg.as_string())
+    s.quit()
+
+
 def register(name, email, password):
     if name and email and password:
         session = DBSession()
@@ -128,6 +155,7 @@ def register(name, email, password):
             # Создаем нового пользователя
             user = User(name=name, email=email)
             ##TODO SMTP mail
+            send_email(email, password)
             user.password = password
             session.add(user)
             session.commit()

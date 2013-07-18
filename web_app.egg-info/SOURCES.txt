@@ -19,9 +19,7 @@ web_app.egg-info/entry_points.txt
 web_app.egg-info/not-zip-safe
 web_app.egg-info/requires.txt
 web_app.egg-info/top_level.txt
-web_app/scripts/__init__.py
-web_app/scripts/initializedb.py
-web_app/song/Grif.png
+web_app/images/Grif.png
 web_app/song/__init__.py
 web_app/song/chord.py
 web_app/song/couplet.py
@@ -47,4 +45,3 @@ web_app/static/css/bootstrap.min.css
 web_app/static/css/pesennik.css
 web_app/static/images/social-icons.png
 web_app/static/js/bootstrap.min.js
-web_app/templates/chord.pt
