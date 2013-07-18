@@ -129,6 +129,7 @@ def add_view(request):
 @auth_required
 def edit_view(request):
     try:
+        song = None
         song_id = request.matchdict['song_id']
         web_song = DBSession().query(WebSong).get(song_id)
         if "song_text" in request.POST:
@@ -144,6 +145,7 @@ def edit_view(request):
             song_delete(song_id)
             return HTTPFound(location='/')
         return {
+            'song': song,
             'song_text': song_text(web_song.song, web_song.song.base_chord),
             'song_title': web_song.title,
             'tones': all_chord_tones,

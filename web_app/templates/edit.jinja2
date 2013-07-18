@@ -1,7 +1,8 @@
 {% extends 'mytemplate.jinja2' %}
 {% block content %}
 
-<form method="post" xmlns="http://www.w3.org/1999/html">
+<form method="post">
+    {{song.couplets}}
 <center>
     <br><b>Название песни:</b>
         <input type="text" size="40" name="title" value= "{{ song_title }}">
@@ -14,7 +15,8 @@
     <b><input type="submit" value="Готово"></b>
 
         <br><textarea name="song_text" rows="20" cols="120">{{ song_text }}</textarea></br>
-           <Br><input type="submit" value="Удалить" name="delete_song"
+           <Br><input type="submit" value="Сохранить" name="save">
+           <input style='float:right' type="submit" value="Удалить эту песню" name="delete_song"
                       onclick="return confirm('Правда-правда?')">
 </center>
   </p>

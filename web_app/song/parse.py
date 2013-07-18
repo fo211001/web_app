@@ -1,10 +1,13 @@
 #-*- coding: utf-8 -*-
 
-from song_part import SongPart, EndOfLine
-from song_chord import Chord
-from song import Song
-from couplet import Couplet
-from chord import get_tone, is_chord, normal_view, parse_chord, semitone_distance, all_chords
+from .song_part import SongPart, EndOfLine
+from .song_chord import Chord
+from .song import Song
+from .couplet import Couplet
+from .chord import (
+    get_tone, is_chord, normal_view, parse_chord,
+    semitone_distance, all_chords
+)
 
 vowels = [u'а', u'е', u'ё', u'и', u'о', u'у', u'ы', u'э', u'ю', u'я',
           u'А', u'Е', u'Ё', u'И', u'О', u'У', u'Ы', u'Э', u'Ю', u'Я']
@@ -59,43 +62,40 @@ def get_base_chord(list_of_couplets_tokens):
 
 
 def parse_to_syl(word):
-    listSyllables = []
+    list_syllables = []
     temp_str = ""
     for i in word:
         if i in vowels:
             temp_str += i
-            listSyllables.append(temp_str)
+            list_syllables.append(temp_str)
             temp_str = ""
         else:
             temp_str += i
             if i == word[-1] or i == '-':
-                if not len(listSyllables) == 0:
-                    last_syl = listSyllables.pop()
+                if not len(list_syllables) == 0:
+                    last_syl = list_syllables.pop()
                 else:
                     last_syl = ""
-                listSyllables.append(last_syl + temp_str)
+                list_syllables.append(last_syl + temp_str)
                 temp_str = ""
 
-    return listSyllables
+    return list_syllables
 
 
 def parse_to_couplet_text(song):
-    list_couplets = []
-    couplet = ""
-    i = 0
-    while i < len(song):
-        if song[i] == "\n" or song[i] == "\r\n" or song[i] == "\n\r":
-            couplet += song[i]
-            if i+1 < len(song):
-                if song[i+1] == "\n" or song[i+1] == "\r\n":
-                    if not couplet == "":
-                        list_couplets.append(couplet)
-                        couplet = ""
+    list_couplets, couplet = [], []
+    lines = song.splitlines(True)
+    for line in lines:
+        if line.isspace() or not line:
+            if couplet:
+                list_couplets.append("".join(couplet))
+                couplet = []
         else:
-            couplet += song[i]
-        i += 1
-    if not couplet == "":
-        list_couplets.append(couplet)
+            couplet.append(line)
+
+    if couplet:
+        list_couplets.append("".join(couplet))
+
     return list_couplets
 
 
@@ -148,7 +148,9 @@ def optimize_tokens(tokens):
     :param tokens:
     """
     if chords_only(tokens):
-        return [(chord, pos) for chord, pos in tokens if isinstance(chord, Chord)]
+        return [
+            (chord, pos) for chord, pos in tokens if isinstance(chord, Chord)
+        ]
     else:
         optimized_tokens = []
 
@@ -157,7 +159,7 @@ def optimize_tokens(tokens):
                 optimized_tokens.append((word, pos))
             elif not word.isspace() and word:
                 if optimized_tokens:
-                    optimized_tokens.append((" ", pos-1))
+                    optimized_tokens.append((" ", pos - 1))
                 for syl in parse_to_syl(word):
                     optimized_tokens.append((syl, pos))
                     pos += len(syl)
@@ -169,9 +171,9 @@ def create_couplet(list_of_string):
     i = 0
     while i < len(list_of_string):
         string = list_of_string[i]
-        if chords_only(string) and i+1 < len(list_of_string):
-            if not chords_only(list_of_string[i+1]):
-                for part in join_chords(string, list_of_string[i+1]):
+        if chords_only(string) and i + 1 < len(list_of_string):
+            if not chords_only(list_of_string[i + 1]):
+                for part in join_chords(string, list_of_string[i + 1]):
                     yield part
                 i += 1
             else:
@@ -220,7 +222,7 @@ def join_chords(chords, words):
         elif cpos < wpos:
             i += 1
             yield SongPart("", chord[0])
-        elif cpos >= wpos+wlen:
+        elif cpos >= wpos + wlen:
             j += 1
             yield SongPart(word[0])
 
@@ -233,5 +235,3 @@ def join_chords(chords, words):
         j += 1
 
     yield EndOfLine()
-
-
