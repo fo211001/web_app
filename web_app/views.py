@@ -268,7 +268,6 @@ def pass_remind_view(request):
 
 def remind_pass(email):
     session = DBSession()
-    #query = session.query(User).filter(User.email == email)
     for user in session.query(User):
         if user.email == email:
             user.password = pas_gen()

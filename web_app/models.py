@@ -144,9 +144,9 @@ def send_email(email, password, theme):
         msg.attach(msg_text)
     if theme == 2:
         msg['Subject'] = 'Восстановление пароля на Мой песенник.ру'
-        msg_text = MIMEText('\nNew pass: ' + password, "plain", "utf-8")
+        msg_text = MIMEText(u'\nВаш новый пароль: ' + password, "plain", "utf-8")
         msg.attach(msg_text)
-        # Подключение
+    # Подключение
     s = smtplib.SMTP(server, port)
     s.ehlo()
     s.starttls()
