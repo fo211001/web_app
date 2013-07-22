@@ -8,8 +8,9 @@ from .models import (
     User,
     WebSong,
     login,
-    register
-)
+    register,
+    pas_gen,
+    send_email)
 
 from .song.chord import all_chord_tones, all_chord_types, parse_chord
 
@@ -20,7 +21,7 @@ from .song.fingering.filters import (
     AllNotesNeededFilter, CountOfFingersFilter,
     DistFilter, OnlyBarreFilter, TunesFilter,
     WithCordsFilter, WithoutBarreFilter
-)
+    )
 from .song.fingering import iterate_fingerings
 from .song.drawer import image_fingering
 
@@ -177,7 +178,6 @@ def generate_fingering(request):
 @view_config(route_name='chord', renderer='templates/chord.jinja2')
 @view_config(route_name='chords', renderer='templates/chord.jinja2')
 def filters_for_fingerings(request):
-
     data = {
         'tones': [
             (x.replace("#", "-"), x) for x in all_chord_tones
@@ -246,3 +246,33 @@ def filters_for_fingerings(request):
                 "filters": filters,
             })
     return data
+
+
+@view_config(route_name='passremind', renderer='templates/passremind.jinja2')
+def pass_remind_view(request):
+    nxt = request.params.get('next') or request.route_url('home')
+    did_fail = False
+    if 'email' in request.POST:
+        password = remind_pass(request.POST["email"])
+        if password:
+            send_email(request.POST["email"], str(password), 2)
+            return HTTPFound(location=nxt)
+        else:
+            did_fail = True
+    return {
+        'login': "",
+        'next': nxt,
+        'failed_attempt': did_fail,
+    }
+
+
+def remind_pass(email):
+    session = DBSession()
+    #query = session.query(User).filter(User.email == email)
+    for user in session.query(User):
+        if user.email == email:
+            user.password = pas_gen()
+            session.add(user)
+            session.commit()
+            return user.password
+        return False
