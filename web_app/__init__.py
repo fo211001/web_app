@@ -41,6 +41,7 @@ def main(global_config, **settings):
     config.add_route('add', '/add')
     config.add_route('edit', '/edit/{song_id}')
     config.add_route('songs', '/songs')
+    config.add_route('passremind', '/passremind')
     config.add_notfound_view(not_found, append_slash=True)
     config.scan()
     return config.make_wsgi_app()

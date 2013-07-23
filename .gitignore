@@ -1,2 +1,4 @@
 *.pyc
 web_app/images
+*.log
+*.pid

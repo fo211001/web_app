@@ -17,6 +17,7 @@ from pyramid.events import subscriber, NewRequest
 import md5
 import random
 import string  # pylint: disable=W0402
+import socket
 
 # pylint: disable=C0103
 Base = declarative_base()
@@ -119,27 +120,41 @@ class EmailExistError(Exception):
     pass
 
 
-def send_email(email, password):
-    me = 'Moipesennik.ru'
+def send_email(email, password, theme):
+    """
+    :param email: ПЯ на который будем отправлять письмо
+    :param password: пароль пользователя
+    :param theme: переменная, по которой понимаем для чего письмо(либо письмо при регистрации или письмо с новым паролем)
+    """
+    me = 'moipesennik@mail.ru'
     server = 'smtp.mail.ru'
     port = 25
     user_name = 'moipesennik@mail.ru'
-    user_passwd = '123456789w'#пароль отправителя
-    msg = MIMEMultipart('mixed')
-    msg['Subject'] = u'Регистрация на Мойпесенник.ру'
+    user_password = '123456789w'#пароль отправителя
+    msg = MIMEMultipart()
     msg['From'] = me
     msg['To'] = email
-    msg.attach(MIMEText(u'Спасибо за регистрацию на сайте moipesennik.ru\nВаш логин: ' + email + u'\nВаш пароль: '
-                        + password, 'plain'))
+    if theme == 1:
+        msg['Subject'] = 'Регистрация на Мой песенник.ру'
+        msg_text = MIMEText(
+            u'Спасибо за регистрацию на сайте moipesennik.ru!\nЗдесь вы можете хранить все свои песни:)\n\nВаш логин: '
+            + email + u'\n\nВаш пароль: ' + password,
+            "plain",
+            "utf-8")
+        msg.attach(msg_text)
+    if theme == 2:
+        msg['Subject'] = 'Восстановление пароля на Мой песенник.ру'
+        msg_text = MIMEText(u'\nВаш новый пароль: ' + password, "plain", "utf-8")
+        msg.attach(msg_text)
     # Подключение
     s = smtplib.SMTP(server, port)
     s.ehlo()
     s.starttls()
     s.ehlo()
     # Авторизация
-    s.login(user_name, user_passwd)
+    s.login(user_name, user_password)
     # Отправка пиьма
-    s.sendmail(me, email, msg.as_string())
+    s.sendmail(user_name, email, msg.as_string())
     s.quit()
 
 
@@ -155,7 +170,7 @@ def register(name, email, password):
             # Создаем нового пользователя
             user = User(name=name, email=email)
             ##TODO SMTP mail
-            send_email(email, password)
+            send_email(email, password, 1)
             user.password = password
             session.add(user)
             session.commit()
