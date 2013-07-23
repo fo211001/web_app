@@ -3,6 +3,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.response import FileResponse
 from pyramid.security import remember, authenticated_userid, forget
 from pyramid.view import view_config, forbidden_view_config
+from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from .models import (
     DBSession,
     User,
@@ -48,7 +49,12 @@ def auth_required(func):
 
 @view_config(route_name='about', renderer='templates/about.jinja2')
 def about_view(request):
-    return {'About': "us"}
+    return {
+        'About': u"Мы хотим, чтобы у вас была возможность хранить все свои песни в одном месте. Пользуясь нашим "
+                 u"сайтом вы можете научится брать неизвестные вам аккорды, изменять тональность песни "
+                 u"и многое другое:)"
+
+}
 
 
 def get_current_user(request):
@@ -268,10 +274,50 @@ def pass_remind_view(request):
 
 def remind_pass(email):
     session = DBSession()
-    for user in session.query(User):
-        if user.email == email:
-            user.password = pas_gen()
-            session.add(user)
-            session.commit()
-            return user.password
+    try:
+        user = session.query(User).filter(User.email == email).one()
+        user.password = pas_gen()
+        session.add(user)
+        session.commit()
+        return user.password
+    except MultipleResultsFound:
+        # This should not be happening if unique index is properly set up on `user`.`email`
+        #  proper action here is signalling to the developer - log the exception
         return False
+    except NoResultFound:
+        return False
+
+
+@view_config(route_name='settings', renderer='templates/settings.jinja2')
+@auth_required
+def settings_view(request):
+    did_fail = False
+    user = get_current_user(request)
+    if 'password' in request.POST:
+        new_password = change_pass(user.email, request.POST["password"])
+        if new_password:
+            send_email(user.email, str(request.POST["password"]), 3)
+            return {"Messege": u"Ваш пароль успешно изменен"}
+        else:
+            did_fail = True
+    return {
+        'login': "",
+        'failed_attempt': did_fail,
+    }
+
+
+def change_pass(email, password):
+    session = DBSession()
+    try:
+        user = session.query(User).filter(User.email == email).one()
+        user.password = password
+        session.add(user)
+        session.commit()
+        return True
+    except MultipleResultsFound:
+        return False
+    except NoResultFound:
+        return False
+    except:
+        return False
+

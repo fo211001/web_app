@@ -1,0 +1,18 @@
+{% extends 'mytemplate.jinja2' %}
+{% block content %}
+<center>
+<form method="post" >
+    <h3>Сменить пароль</h3>
+    <p><b>Введите новый пароль:</b><br>
+        <input type="password" size="40" name="password">
+    <br><input type="submit" value="Сменить пароль">
+    <br><h3>{{ Messege }}</h3>
+ </form>
+       {% if failed_attempt %}
+        <center><h3>Не удалось сменить пароль.</h3></center>
+    {% endif %}
+</center>
+
+
+
+{% endblock %}

@@ -146,6 +146,10 @@ def send_email(email, password, theme):
         msg['Subject'] = 'Восстановление пароля на Мой песенник.ру'
         msg_text = MIMEText(u'\nВаш новый пароль: ' + password, "plain", "utf-8")
         msg.attach(msg_text)
+    if theme == 3:
+        msg['Subject'] = 'Смена пароля на Мой песенник.ру'
+        msg_text = MIMEText(u'\nВаш новый пароль: ' + password, "plain", "utf-8")
+        msg.attach(msg_text)
     # Подключение
     s = smtplib.SMTP(server, port)
     s.ehlo()
